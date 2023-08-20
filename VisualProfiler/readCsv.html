@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <ttle></ttle>
+    <script src="https://cdn.anychart.com/releases/8.0.1/js/anychart-core.min.js"></script>
+    <script src="https://cdn.anychart.com/releases/8.0.1/js/anychart-pie.min.js"></script>
+    <style>
+      *{
+        
+        font-family: Arial, Helvetica, sans-serif;
+        box-sizing: border-box;
+      }
+      body {
+        background-color: rgb(29, 29, 29);
+        color: white;
+        display: flex;
+
+        margin: 0px;
+        padding: 0px;
+
+      }
+
+      .Wrapper {
+        display: flex;
+        flex-direction: row;
+        align-items: stretch;
+        width: 100%;
+        height: 100%;
+        min-height: 500vh;
+        min-width: 100vw;
+
+        margin: 10px;
+        padding: 0px;
+      }
+
+      .Wrapper>div {
+        flex: 1;
+      }
+
+      .WrapperVertical {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        width: 100%;
+        height: 100%;
+        min-height: 100vh;
+        min-width: 100vw;
+
+        margin: 0px;
+        padding: 0px;
+      }
+
+
+
+      table
+      {
+        border-collapse: collapse;
+        background: #2c2c2c;
+        color: #fff;
+        font-family: Arial;
+        font-size: 16px;
+        text-align: center;
+        width: 100%;
+
+
+      }
+      table tr:first-child
+      {
+        background: #212121;
+        font-size: 18px;
+        font-weight: bold;
+      }
+      table td
+      {
+        padding: 7px;
+        border: 1px solid #7c7c7c;
+      }
+      #container {
+        /*put the container on the right side of the screen*/
+        width: 30%;
+        height: 400px;
+        width: 45%;
+
+        margin-left:10%;
+      
+      }
+
+      #tableDiv {
+        /*put the table on the left side of the screen*/
+
+
+        width: 45%;
+
+
+
+      }
+
+      .header {
+        /*put the header on the top of the screen and fill the width of the screen*/
+        width: 100%;
+        height: 10%;
+        background-color: rgb(24, 24, 24);
+        color: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 20px;
+        font-weight: bold;
+        padding: 0px;
+        margin: 0px;
+
+
+      }
+
+
+  
+
+    </style>
+  </head>
+  <body>
+
+
+    <div class="WrapperVertical">
+      <div class="header">
+        <h1>Profiler Visualizer</h1>
+      </div>
+
+      <div class="header" style="background-color: rgb(20, 20, 20); padding: 5px;">
+        <input type="file" accept=".csv" id="picker">
+      </div>
+
+
+
+    <div class="Wrapper">
+      <div id="tableDiv">
+      <table id = "table"></table>
+      </div>
+
+      
+      <div id="container"></div>
+
+    </div>
+  </div>
+
+
+    <script>
+
+      var data = ["None", 0.0];
+      var chart;
+
+      window.onload = () => {
+        var reader = new FileReader(),
+        picker = document.getElementById("picker");
+        table = document.getElementById("table");
+
+        picker.onchange = () => reader.readAsText(picker.files[0]);
+
+        reader.onloadend = () => {
+          let csv = reader.result;
+
+          table.innerHTML = "";
+
+          let rows = csv.split("\r\n");
+
+
+
+          for (let row of rows)
+          {
+            let cols = row.match(/(?:\"([^\"]*(?:\"\"[^\"]*)*)\")|([^\",]+)/g);
+
+            // add first two index to data
+            if (cols && cols.length > 1)
+            {
+              data.push([cols[0].replace(/(^"|"$)/g, ""), parseFloat(cols[1].replace(/(^"|"$)/g, ""))]);
+            }
+            
+            if (cols)
+            {
+              let tr = table.insertRow();
+              for (let col of cols)
+              {
+                let td = tr.insertCell();
+                td.innerHTML = col.replace(/(^"|"$)/g, "")
+              }
+            }
+          }
+
+          chart.data(data);
+          chart.draw();
+          
+          // set size of chart in y direction
+          chart.set
+        };
+      };
+
+      anychart.onDocumentReady(function() {
+
+
+          chart = anychart.pie();
+          chart.title("");
+
+          // set chart background color
+          chart.background().fill("rgb(29, 29, 29)");
+
+          // make it so chart doesn't fill entire width of container
+          chart.width("75%"); 
+
+          chart.height("100%");
+
+          chart.innerRadius("30%");
+
+
+
+
+
+
+
+
+          // remove chart borders
+          chart.padding(0).margin(0);
+          
+          // set chart radius
+          chart.radius("40%");
+
+          // remove legend
+          chart.legend().enabled(false);
+          
+          // set the data from csv file
+          //chart.data(data);
+
+          chart.container("container");
+          //chart.draw();
+      });
+    </script>
+
+  </body>
+</html>
